@@ -1,0 +1,14 @@
+
+.movie {
+    margin: 10px;
+	padding: 10px;
+	border: 1px solid black;
+	display: flex;
+	align-items: center;
+    	}
+.movie span {
+	margin-right: 10px;
+	}
+.movie button {
+	margin-left: auto;
+	}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Movie Ratings</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			// initialize empty array to hold movie data
+			var movies = [];
+
+			// function to add a movie to the DOM
+			function addMovieToDOM(movie) {
+				// create HTML elements for movie title, rating, and remove button
+				var titleElement = $('<span>').text(movie.title);
+				var ratingElement = $('<span>').text(movie.rating);
+				var removeButton = $('<button>').text('Remove');
+
+				// add click handler to remove button
+				removeButton.click(function() {
+					// remove movie from array
+					var index = movies.indexOf(movie);
+					if (index !== -1) {
+						movies.splice(index, 1);
+					}
+
+					// remove movie from DOM
+					movieElement.remove();
+				});
+
+				// create container element for movie data
+				var movieElement = $('<div>').addClass('movie');
+				movieElement.append(titleElement, ratingElement, removeButton);
+
+				// add container element to DOM
+				$('#movieList').append(movieElement);
+			}
+
+			// function to sort movies by title
+			function sortByTitle() {
+				movies.sort(function(a, b) {
+					return a.title.localeCompare(b.title);
+				});
+				$('#movieList').empty();
+				movies.forEach(function(movie) {
+					addMovieToDOM(movie);
+				});
+			}
+
+			// function to sort movies by rating
+			function sortByRating() {
+				movies.sort(function(a, b) {
+					return a.rating - b.rating;
+				});
+				$('#movieList').empty();
+				movies.forEach(function(movie) {
+					addMovieToDOM(movie);
+				});
+			}
+
+			// function to handle form submission
+			$('#addMovieForm').submit(function(event) {
+				event.preventDefault();
+
+				// get values from form inputs
+				var title = $('#titleInput').val().trim();
+				var rating = parseInt($('#ratingInput').val());
+
+				// validate inputs
+				if (title.length < 2) {
+					alert('Title must be at least 2 characters');
+					return;
+				}
+				if (rating < 0 || rating > 10) {
+					alert('Rating must be between 0 and 10');
+					return;
+				}
+
+				// create movie object
+				var movie = {
+					title: title,
+					rating: rating
+				};
+
+				// add movie to array and DOM
+				movies.push(movie);
+				addMovieToDOM(movie);
+
+				// clear form inputs
+				$('#titleInput').val('');
+				$('#ratingInput').val('');
+			});
+
+			// add click handlers to sort buttons
+			$('#sortByTitleButton').click(sortByTitle);
+			$('#sortByRatingButton').click(sortByRating);
+			$('#sortByTitleReverseButton').click(function() {
+				sortByTitle();
+				$('#movieList').append($('#movieList > div').get().reverse());
+			});
+			$('#sortByRatingReverseButton').click(function() {
+				sortByRating();
+				$('#movieList').append($('#movieList > div').get().reverse());
+			});
+		});
+	</script>
+	<style>
+		.movie {
+			margin: 10px;
+			padding: 10px;
+			border: 1px solid black;
+			display: flex;
+			align-items: center;
+    	}
+	.movie span {
+		margin-right: 10px;
+	}
+	.movie button {
+		margin-left: auto;
+	}
+</style>
+
+</head>
+<body>
+	<h1>Movie Ratings</h1>
+	<form id="addMovieForm">
+		<label for="titleInput">Title:</label>
+		<input type="text" id="titleInput" name="title">
+		<label for="ratingInput">Rating:</label>
+		<input type="number" id="ratingInput" name="rating" min="0" max="10">
+		<button type="submit">Add</button>
+	</form>
+	<div>
+		<button id="sortByTitleButton">Sort by Title</button>
+		<button id="sortByTitleReverseButton">Sort by Title (reverse)</button>
+		<button id="sortByRatingButton">Sort by Rating</button>
+		<button id="sortByRatingReverseButton">Sort by Rating (reverse)</button>
+	</div>
+	<div id="movieList">
+		<!-- movies will be added here dynamically -->
+	</div>
+</body>
+</html>
+
